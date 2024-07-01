@@ -1,0 +1,58 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Staff {
+  createdAt      DateTime @default(now())
+  employeeNumber String?
+  id             String   @id @default(cuid())
+  name           String?
+  role           String?
+  service        Service? @relation(fields: [serviceId], references: [id])
+  serviceId      String?
+  updatedAt      DateTime @updatedAt
+}
+
+model Queue {
+  createdAt   DateTime         @default(now())
+  finishedAt  DateTime?
+  id          String           @id @default(cuid())
+  queueNumber Int?
+  service     Service?         @relation(fields: [serviceId], references: [id])
+  serviceId   String?
+  startedAt   DateTime?
+  status      EnumQueueStatus?
+  updatedAt   DateTime         @updatedAt
+}
+
+model Service {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  name        String?
+  office      Office?  @relation(fields: [officeId], references: [id])
+  officeId    String?
+  queues      Queue[]
+  serviceCode String?
+  staffItems  Staff[]
+  updatedAt   DateTime @updatedAt
+}
+
+model Office {
+  createdAt  DateTime  @default(now())
+  id         String    @id @default(cuid())
+  location   String?
+  name       String?
+  officeCode String?
+  services   Service[]
+  updatedAt  DateTime  @updatedAt
+}
+
+enum EnumQueueStatus {
+  Option1
+}
