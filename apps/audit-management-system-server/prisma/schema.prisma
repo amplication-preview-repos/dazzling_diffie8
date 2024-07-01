@@ -1,0 +1,60 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Agenda {
+  createdAt   DateTime  @default(now())
+  description String?
+  endDate     DateTime?
+  id          String    @id @default(cuid())
+  name        String?
+  startDate   DateTime?
+  updatedAt   DateTime  @updatedAt
+}
+
+model Rekomendasi {
+  commitment     String?
+  createdAt      DateTime @default(now())
+  explanation    String?
+  id             String   @id @default(cuid())
+  recommendation String?
+  temuan         Temuan?  @relation(fields: [temuanId], references: [id])
+  temuanId       String?
+  updatedAt      DateTime @updatedAt
+}
+
+model Temuan {
+  createdAt    DateTime          @default(now())
+  description  String?
+  id           String            @id @default(cuid())
+  rekomendasis Rekomendasi[]
+  status       EnumTemuanStatus?
+  title        String?
+  updatedAt    DateTime          @updatedAt
+}
+
+model User {
+  createdAt DateTime      @default(now())
+  email     String?       @unique
+  firstName String?
+  id        String        @id @default(cuid())
+  lastName  String?
+  password  String
+  role      EnumUserRole?
+  roles     Json
+  updatedAt DateTime      @updatedAt
+  username  String        @unique
+}
+
+enum EnumTemuanStatus {
+  Option1
+}
+
+enum EnumUserRole {
+  Option1
+}
